@@ -1,0 +1,32 @@
+version: '3.4'
+services:
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+  mqtt:
+    image: "eclipse-mosquitto:latest"
+    ports:
+      - "1885:1883"
+    volumes:
+      - ./config:/mosquitto/config:rw
+  file-processor:
+    image: "ghcr.io/isaric/file-processor:main"
+    environment:
+      - spring_profiles_active=docker
+    depends_on:
+      - mqtt
+      - mysql
+  mysql:
+    image: 'mysql:latest'
+    environment:
+      - 'MYSQL_DATABASE=file-processor'
+      - 'MYSQL_PASSWORD=secret'
+      - 'MYSQL_ROOT_PASSWORD=verysecret'
+      - 'MYSQL_USER=fileprocessor'
+    ports:
+      - '3308:3306'
+  file-uploader:
+    build: .
+    ports:
+      - "5000:5000"
