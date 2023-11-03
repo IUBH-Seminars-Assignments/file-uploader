@@ -1,6 +1,7 @@
 import redis
 from time import sleep
 
+
 class RedisClient:
 
     def __init__(self, host, port, db):
@@ -11,16 +12,16 @@ class RedisClient:
 
     def get(self, key):
         return self.client.get(key)
-    
+
     def get_with_block(self, key):
-        while self.client.get(key) == None:
+        while self.client.get(key) is None:
             sleep(1)
         return self.client.get(key)
-    
+
     def set(self, key, value):
         val = self.client.set(key, value)
         self.client.expire(key, 300)
         return val
-    
+
+
 rc = RedisClient(host='redis', port=6379, db=0)
-    
