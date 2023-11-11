@@ -1,22 +1,5 @@
 version: '3.4'
 services:
-  redis:
-    image: "redis:latest"
-    ports:
-      - "6379:6379"
-  mqtt:
-    image: "eclipse-mosquitto:latest"
-    ports:
-      - "1885:1883"
-    volumes:
-      - ./config:/mosquitto/config:rw
-  file-processor:
-    image: "ghcr.io/isaric/file-processor:main"
-    environment:
-      - spring_profiles_active=docker
-    depends_on:
-      - mqtt
-      - mysql
   mysql:
     image: 'mysql:latest'
     environment:
@@ -25,8 +8,41 @@ services:
       - 'MYSQL_ROOT_PASSWORD=verysecret'
       - 'MYSQL_USER=fileprocessor'
     ports:
-      - '3308:3306'
+      - '3307:3306'
+    networks:
+      - medidoc
+  redis:
+    image: "redis:latest"
+    ports:
+      - "6379:6379"
+    networks:
+      - medidoc
+  mqtt:
+    image: "eclipse-mosquitto:latest"
+    ports:
+      - "1885:1883"
+    volumes:
+      - ./config:/mosquitto/config:rw
+    networks:
+      - medidoc
+  file-processor:
+    image: "fp"
+    restart: on-failure
+    environment:
+      - spring_profiles_active=docker
+    networks:
+      - medidoc
+    depends_on:
+      - mqtt
+      - mysql
   file-uploader:
     build: .
     ports:
       - "5000:5000"
+    depends_on:
+      - mqtt
+      - redis
+    networks:
+      - medidoc
+networks:
+  medidoc:

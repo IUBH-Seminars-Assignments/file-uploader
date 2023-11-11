@@ -1,17 +1,18 @@
 import json
+import base64
 
 
 class FileUpload:
     topic = "file-upload"
 
     def __init__(self, file_contents, file_format, external_id, external_id_type):
-        self.file_contents = json.loads(file_contents)
+        self.file_contents = file_contents
         self.file_format = file_format
         self.external_id = external_id
         self.external_id_type = external_id_type
 
     def to_payload(self):
-        return json.dumps({"fileContents": self.file_contents, "fileFormat": self.file_format,
+        return json.dumps({"fileContents": base64.b64encode(self.file_contents).decode("utf-8"), "fileFormat": self.file_format,
                            "externalId": self.external_id, "externalIdType": self.external_id_type})
 
 
