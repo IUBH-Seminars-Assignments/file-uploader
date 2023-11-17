@@ -5,9 +5,10 @@ import uuid
 
 class MqttClient:
 
-    def __init__(self, host, port, topic):
+    def __init__(self, host, port, topic, s_topic=None):
         self.client_id = str(uuid.uuid4())
         self.topic = topic
+        self.s_topic = s_topic
         self.client = mqtt_client.Client(client_id=self.client_id)
         self.client.connect(host=host, port=port)
 
@@ -18,5 +19,6 @@ class MqttClient:
         rc.set(self.topic, msg)
 
     def subscribe(self):
-        self.client.subscribe(f'{self.topic}/{self.client_id}')
-        self.client.on_message = self.on_message
+        if self.s_topic is not None:
+            self.client.subscribe(f'{self.topic}/{self.client_id}')
+            self.client.on_message = self.on_message

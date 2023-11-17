@@ -12,8 +12,9 @@ class FileUpload:
         self.external_id_type = external_id_type
 
     def to_payload(self):
-        return json.dumps({"fileContents": base64.b64encode(self.file_contents).decode("utf-8"), "fileFormat": self.file_format,
-                           "externalId": self.external_id, "externalIdType": self.external_id_type})
+        return json.dumps(
+            {"fileContents": base64.b64encode(self.file_contents).decode("utf-8"), "fileFormat": self.file_format,
+             "externalId": self.external_id, "externalIdType": self.external_id_type})
 
 
 # Response DTO for searching external Ids

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request
 from mqtt_client.publisher import MqttClient
-from model.models import FileUpload, IdSearch, RecordSearch, IdPair
+from model.models import FileUpload, IdSearch, RecordSearch, IdPair, PatientRecord
 from redis_client.client import rc
 import os
 
@@ -14,8 +14,8 @@ app = Flask(__name__,
 app.config.update(SECRET_KEY=os.urandom(24))
 
 upload_publisher = MqttClient(host='mqtt', port=1883, topic=FileUpload.topic)
-id_search_publisher = MqttClient(host='mqtt', port=1883, topic=IdSearch.topic)
-patient_record_publisher = MqttClient(host='mqtt', port=1883, topic=RecordSearch.topic)
+id_search_publisher = MqttClient(host='mqtt', port=1883, topic=IdSearch.topic, s_topic=IdPair.topic)
+patient_record_publisher = MqttClient(host='mqtt', port=1883, topic=RecordSearch.topic, s_topic=PatientRecord.topic)
 
 
 @app.route('/', methods=['GET'])
