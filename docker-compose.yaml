@@ -26,7 +26,7 @@ services:
     networks:
       - medidoc
   file-processor:
-    image: "ghcr.io/isaric/file-processor:main"
+    image: "ghcr.io/iubh-seminars-assignments/file-processor:main"
     restart: on-failure
     environment:
       - spring_profiles_active=docker
